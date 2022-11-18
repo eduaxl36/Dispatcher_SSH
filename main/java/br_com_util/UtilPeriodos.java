@@ -20,30 +20,20 @@ public class UtilPeriodos {
 
     public static String configuraAnoConformePadrao(String PadraoRecebido, Date Data) {
 
-        long OcorrenciasAno = PadraoRecebido.chars().filter(ch -> ch == 'Y').count();
+     
         String RetornaDataDoPadrao = "";
 
-        if (OcorrenciasAno == 4) {
 
             String Ano = new SimpleDateFormat("yyyy").format(Data.getTime());
+            String Ano2Digits = new SimpleDateFormat("yy").format(Data.getTime());
             String Mes = new SimpleDateFormat("MM").format(Data.getTime());
             String Dia = new SimpleDateFormat("dd").format(Data.getTime());
 
             RetornaDataDoPadrao
-                    = PadraoRecebido.replaceAll("DD", Dia)
-                            .replaceAll("MM", Mes).replaceAll("YYYY", Ano);
+                    = PadraoRecebido.replaceAll("Œ", Ano2Digits).replaceAll("œ", Dia)
+                            .replaceAll("Š", Mes).replaceAll("‰", Ano);
 
-        } else {
-
-            String Ano = new SimpleDateFormat("yy").format(Data.getTime());
-            String Mes = new SimpleDateFormat("MM").format(Data.getTime());
-            String Dia = new SimpleDateFormat("dd").format(Data.getTime());
-
-            RetornaDataDoPadrao
-                    = PadraoRecebido.replaceAll("DD", Dia)
-                            .replaceAll("MM", Mes).replaceAll("YY", Ano);
-
-        }
+       
 
         return RetornaDataDoPadrao;
     }

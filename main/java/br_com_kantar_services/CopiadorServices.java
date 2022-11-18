@@ -21,12 +21,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CopiadorServices {
 
+    
     private CopiadorDao Servico;
 
-    public CopiadorServices(LocalDate Data, DefaultTableModel Modelo, JTable Tabela) throws IOException {
+    public CopiadorServices(LocalDate Data, JTable Tabela) throws IOException {
 
-        this.Servico = new CopiadorDao(Data, Modelo, Tabela);
+        this.Servico = new CopiadorDao(Data, Tabela);
 
+    }
+
+    public CopiadorServices() throws IOException {
+        
+        this.Servico = new CopiadorDao();
     }
 
     public void executor() throws Exception {
@@ -36,16 +42,16 @@ public class CopiadorServices {
             this.Servico.executor();
 
         } catch (Exception e) {
-            
+
             e.printStackTrace();
-            
+
         }
 
     }
 
-    public void filtrarTabelaCopiador(List<String> Regioes, String Instancia, String Processo) throws IOException {
+    public void filtrarTabelaCopiador(List<String> Regioes, String Instancia) throws IOException {
 
-        this.Servico.filtrarTabelaCopiador(Regioes, Instancia, Processo);
+        this.Servico.filtrarTabelaCopiador(Regioes, Instancia);
 
     }
 
@@ -61,5 +67,10 @@ public class CopiadorServices {
 
     }
 
+    public List<String> obterListaRegioes() throws IOException {
+
+        return this.Servico.obterListaRegioes();
+
+    }
 
 }

@@ -5,7 +5,6 @@
 package br_com_kantar_ftp_factory;
 
 import br_com_kantar_exception.FtpFileNotFoundException;
-import br_com_kantar_dao.FTPConnectionDao;
 import br_com_kantar_model.FTPConnectionModel;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,8 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.swing.JOptionPane;
 import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -46,7 +45,7 @@ public class FTPConnection extends FTPService {
 
         this.ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 
-        this.ftpClient.enterLocalActiveMode();
+        this.ftpClient.enterLocalPassiveMode();
 
         this.ftpClient.login(username, password);
 
@@ -58,7 +57,12 @@ public class FTPConnection extends FTPService {
     public void downloadArquivo(String Remoto, String Local) throws FileNotFoundException, IOException {
 
         try ( FileOutputStream Out = new FileOutputStream(new File(Local))) {
+
+            this.ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            this.ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+
             this.ftpClient.retrieveFile(Remoto, Out);
+
             Out.flush();
         }
 
@@ -66,8 +70,11 @@ public class FTPConnection extends FTPService {
 
     @Override
     public void uploadArquivo(String Local, String Remoto) throws FileNotFoundException, IOException {
-       
+
+        this.ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        this.ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
         FileInputStream In = new FileInputStream(new File(Local));
+
         this.ftpClient.storeFile(Remoto, In);
 
     }
@@ -76,7 +83,7 @@ public class FTPConnection extends FTPService {
     public boolean validaDestinoRemoto(String Remoto) throws FtpFileNotFoundException {
 
         File PastaRemota = new File(Remoto);
-        String PastaRemotaRotaParente =  PastaRemota.getParent();
+        String PastaRemotaRotaParente = PastaRemota.getParent();
         try {
             FTPFile[] remoteFiles = obterSessao().listFiles(PastaRemotaRotaParente);
             if (!(remoteFiles.length > 0)) {
@@ -96,18 +103,6 @@ public class FTPConnection extends FTPService {
         }
 
         return true;
-    }
-
-    public static void main(String[] args) throws IOException, Exception {
-
-//        FTPConnectionModel fs = new FTPConnectionDao().obterDadosFTP("Sitcal1", 1);
-//
-//        FTPService obj = new FTPConnection(fs);
-
-//        obj.validaDestinoRemoto("/teste/");
-//        obj.downloadArquivo("/IMI/Peru/SPOTS/Diario/20220503.txt", "c:/teste/20220503.txt");
-
-//                
     }
 
 }

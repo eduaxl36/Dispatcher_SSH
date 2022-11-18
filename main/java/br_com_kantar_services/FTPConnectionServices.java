@@ -17,28 +17,24 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Eduardo.Fernando
  */
-public class ConfiguracoesServices {
+public class FTPConnectionServices {
 
     private FTPConnectionDao Servico = null;
-    private FTPConnectionModel ObjCf = null;
 
-    public ConfiguracoesServices() {
-
+    public FTPConnectionServices() {
     }
 
-    public ConfiguracoesServices(JTable Tabela,int Id,String Owner,String User,String Pass,String Host,String Porta,int Tipo,String Key) throws IOException {
+    public FTPConnectionServices(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo, String Key) throws IOException {
 
         this.Servico = new FTPConnectionDao(Tabela, Id, Owner, User, Pass, Host, Porta, Tipo, Key);
-       
+
     }
- 
-    
-    public ConfiguracoesServices(JTable Tabela,int Id,String Owner,String User,String Pass,String Host,String Porta,int Tipo) throws IOException {
+
+    public FTPConnectionServices(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo) throws IOException {
 
         this.Servico = new FTPConnectionDao(Tabela, Id, Owner, User, Pass, Host, Porta, Tipo);
-      
-    }    
-   
+
+    }
 
     public void preecherTabelaFTP() {
 
@@ -50,7 +46,6 @@ public class ConfiguracoesServices {
 
         return this.Servico.obterChavePublica(Owner);
     }
-
 
     public void addRegistro() throws IOException {
 

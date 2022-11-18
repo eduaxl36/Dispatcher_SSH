@@ -18,7 +18,6 @@ import java.util.Date;
  */
 public class ServicoDataSemanal implements ServicoDataExtensoes {
 
-
     public static String configuraAnoDaSemanaConformePadrao(org.joda.time.LocalDateTime DataConvertidaMiami, String Padrao) throws ParseException {
 
         int SemanaDoAno = DataConvertidaMiami.weekOfWeekyear().get();
@@ -33,37 +32,25 @@ public class ServicoDataSemanal implements ServicoDataExtensoes {
 
         String Ano2Digits = new SimpleDateFormat("yy").format(new SimpleDateFormat("yy").parse("" + DataConvertidaMiami.getWeekyear()));
 
-        long OcorrenciasAno = Padrao.chars().filter(ch -> ch == 'Y').count();
-
-        if (OcorrenciasAno == 4) {
-
-            Padrao = Padrao
-                    .replaceAll("YYYY", Ano)
-                    .replaceAll("\\*", "" + SemanaDoAno)
-                    .replaceAll("%", PosicaoDoDia)
-                    .replaceAll("MM", Mes)
-                    .replaceAll("#", MesExtenso);
-
-        } else {
-
-            Padrao = Padrao
-                    .replaceAll("YY", Ano2Digits)
-                    .replaceAll("\\*", "" + SemanaDoAno)
-                    .replaceAll("%", PosicaoDoDia)
-                    .replaceAll("MM", Mes)
-                    .replaceAll("#", MesExtenso);
-
-        }
+//        long OcorrenciasAno = Padrao.chars().filter(ch -> ch == 'Y').count();
+        Padrao = Padrao
+                
+                .replaceAll("‰", Ano)
+                .replaceAll("Œ", Ano2Digits)
+                .replaceAll("\\*", "" + SemanaDoAno)
+                .replaceAll("%", PosicaoDoDia)
+                .replaceAll("Š", Mes)
+                .replaceAll("#", MesExtenso);
 
         return Padrao;
 
     }
 
     @Override
-    public String obterPadrao(String Data, String Padrao,String Comportamento,int CalculoData) throws ParseException {
+    public String obterPadrao(String Data, String Padrao, String Comportamento, int CalculoData) throws ParseException {
 
-        Data = ajustarCalculoData(Data,CalculoData);
-        
+        Data = ajustarCalculoData(Data, CalculoData);
+
         Date DataConvertida = UtilPeriodos.converteDataStringParaDate(Data);
 
         org.joda.time.LocalDateTime DataConvertidaMiami = converteDateEmJodaDateTime(DataConvertida);
@@ -72,6 +59,5 @@ public class ServicoDataSemanal implements ServicoDataExtensoes {
 
         return Padrao;
     }
-
 
 }

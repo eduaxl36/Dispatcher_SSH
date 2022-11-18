@@ -27,11 +27,11 @@ import org.apache.commons.io.FileUtils;
  */
 public class FTPConnectionDao {
 
+    private final String ROOT = "Cf/FTP/";
     private final String CAMINHO_ARQUIVO_CF_FTP_CONNECTION = "Cf/FTP/FTPConnection.csv";
     private FTPConnectionModel ObjCf;
     private JTable Tabela;
     private List<FTPConnectionModel> Configuracoes = null;
-
     private int Id;
     private String Owner;
     private String User;
@@ -74,6 +74,10 @@ public class FTPConnectionDao {
         this.Tipo = Tipo;
         this.Host = Host;
 
+    }
+
+    public List<FTPConnectionModel> getConfiguracoes() {
+        return Configuracoes;
     }
 
     public FTPConnectionModel retornaObjetoCf(String[] Linha) {
@@ -125,7 +129,7 @@ public class FTPConnectionDao {
 
     }
 
-    public Set<String> obterListaFTPS() throws IOException {
+    public Set<String> obterListaNomesFTP() throws IOException {
 
         Set<String> Instancias = new LinkedHashSet();
 
@@ -161,7 +165,7 @@ public class FTPConnectionDao {
 
     public String obterChavePublica(String Owner) throws IOException {
 
-        return FileUtils.readFileToString(new File("Cf/FTP/" + Owner + "/Key.txt"));
+        return FileUtils.readFileToString(new File(ROOT + Owner + "/Key.txt"));
 
     }
 
@@ -178,7 +182,6 @@ public class FTPConnectionDao {
         DefaultTableModel model = (DefaultTableModel) this.Tabela.getModel();
 
         model.addRow(new Object[]{
-            
             this.Owner,
             this.Host,
             this.User,
@@ -203,9 +206,28 @@ public class FTPConnectionDao {
 
     }
 
+    public void acionaAcoesChavePublica(String Modo) throws IOException {
+
+        if (Modo.equals("Listo para borrar registro")) {
+
+            if (this.Tipo == 2) {
+                FileUtils.deleteDirectory(new File(ROOT + Owner));
+            }
+
+        } else {
+            if (this.Tipo == 2) {
+
+                criaPastaChavePublica();
+                gravarChavePublica();
+
+            }
+
+        }
+    }
+
     public void gravarArquivoFTPConnection(String Modo) throws FileNotFoundException, IOException {
 
-        try ( PrintWriter Pw = new PrintWriter(new File("Cf/FTP/FTPConnection.csv"))) {
+        try ( PrintWriter Pw = new PrintWriter(new File(CAMINHO_ARQUIVO_CF_FTP_CONNECTION))) {
 
             for (int i = 0; i < this.Tabela.getRowCount(); i++) {
 
@@ -219,33 +241,14 @@ public class FTPConnectionDao {
                 );
 
             }
-
-            if (Modo.equals("Listo para borrar registro")) {
-
-                if (this.ObjCf.getTipoFtp() == 2) {
-
-                    FileUtils.deleteDirectory(new File("Cf/FTP/" + Owner));
-
-                }
-
-            } else {
-
-                if (this.Tipo == 2) {
-
-                    criaPastaChavePublica();
-                    gravarChavePublica();
-
-                }
-
-            }
-
+            acionaAcoesChavePublica(Modo);
         }
 
     }
 
     public void criaPastaChavePublica() throws IOException {
 
-        File SourceChave = new File("Cf/FTP/" + this.Owner);
+        File SourceChave = new File(ROOT + this.Owner);
 
         if (!SourceChave.exists()) {
 
@@ -253,7 +256,7 @@ public class FTPConnectionDao {
 
         }
 
-        SourceChave = new File("Cf/FTP/" + this.Owner + "/Key.txt");
+        SourceChave = new File(ROOT + this.Owner + "/Key.txt");
 
         if (!SourceChave.exists()) {
 
@@ -265,7 +268,7 @@ public class FTPConnectionDao {
 
     public void gravarChavePublica() throws IOException {
 
-        File SourceChave = new File("Cf/FTP/" + this.Owner + "/Key.txt");
+        File SourceChave = new File(ROOT + this.Owner + "/Key.txt");
         try ( PrintWriter Pw = new PrintWriter(new File(SourceChave.getAbsolutePath()))) {
 
             Pw.println(this.Key);

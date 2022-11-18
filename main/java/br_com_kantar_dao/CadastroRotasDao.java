@@ -29,14 +29,22 @@ public class CadastroRotasDao {
 
     private CadastroRotasModel Modelo;
     private JTable Tabela;
+    private List<CadastroRotasModel> Configuracoes = null;
+    private final String ROTA_ARQUIVO_SOURCES = "Cf/CaminhosParaCopia.csv";
+    
+    
 
-    public CadastroRotasDao() {
+    public CadastroRotasDao() throws IOException {
+
+        Configuracoes = obterConfiguracoes();
+
     }
 
-    public CadastroRotasDao(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalOrigem, int CalcDestino) {
+    public CadastroRotasDao(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalOrigem, int CalcDestino) throws IOException {
 
         Modelo = new CadastroRotasModel(Id, Instancia, Praça, Processo, Tipo, Origem, PadraoOrigem, ComportamentoOrigem, CalOrigem, Destino, PadraoDestino, ComportamentoDestino, CalcDestino, Modo, Owner, ZipInterno);
         this.Tabela = Tabela;
+        Configuracoes = obterConfiguracoes();
     }
 
     public void addRegistro() {
@@ -95,7 +103,7 @@ public class CadastroRotasDao {
 
     public void gravarTxt() throws FileNotFoundException {
 
-        try ( PrintWriter Pw = new PrintWriter(new File("cf/CaminhosParaCopia.csv"))) {
+        try ( PrintWriter Pw = new PrintWriter(new File(ROTA_ARQUIVO_SOURCES))) {
             for (int i = 0; i < Tabela.getRowCount(); i++) {
 
                 Pw.println(
@@ -121,36 +129,40 @@ public class CadastroRotasDao {
 
     }
 
+    public CadastroRotasModel obterObjetoRotas(String Linha) {
+
+        CadastroRotasModel Objeto = new CadastroRotasModel();
+
+        String[] Info = Linha.split(";");
+
+        Objeto.setInstancia(Info[0]);
+        Objeto.setPraca(Info[1]);
+        Objeto.setProcesso(Info[2]);
+        Objeto.setTipo(Integer.parseInt(Info[3]));
+        Objeto.setOrigem(Info[4]);
+        Objeto.setPadraoOrigem(Info[5]);
+        Objeto.setComportamentoDataOrigem(Info[6]);
+        Objeto.setCalculoDataOrigem(Integer.parseInt(Info[7]));
+        Objeto.setDestino(Info[8]);
+        Objeto.setPadraoDestino(Info[9]);
+        Objeto.setComportamentoDataDestino(Info[10]);
+        Objeto.setCalculoDataDestino(Integer.parseInt(Info[11]));
+        Objeto.setMode(Info[12]);
+        Objeto.setDataOwner(Info[13]);
+        Objeto.setInternalFolder(Info[14]);
+
+        return Objeto;
+    }
+
     public List<CadastroRotasModel> obterConfiguracoes() throws FileNotFoundException, IOException {
 
-        BufferedReader Leitor = new BufferedReader(new FileReader(new File("Cf/CaminhosParaCopia.csv")));
+        BufferedReader Leitor = new BufferedReader(new FileReader(new File(ROTA_ARQUIVO_SOURCES)));
         String Linha = Leitor.readLine();
-        CadastroRotasModel Objeto = null;
         List<CadastroRotasModel> Sources = new ArrayList();
 
         while (Linha != null) {
 
-            Objeto = new CadastroRotasModel();
-
-            String[] Info = Linha.split(";");
-
-            Objeto.setInstancia(Info[0]);
-            Objeto.setPraca(Info[1]);
-            Objeto.setProcesso(Info[2]);
-            Objeto.setTipo(Integer.parseInt(Info[3]));
-            Objeto.setOrigem(Info[4]);
-            Objeto.setPadraoOrigem(Info[5]);
-            Objeto.setComportamentoDataOrigem(Info[6]);
-            Objeto.setCalculoDataOrigem(Integer.parseInt(Info[7]));
-            Objeto.setDestino(Info[8]);
-            Objeto.setPadraoDestino(Info[9]);
-            Objeto.setComportamentoDataDestino(Info[10]);
-            Objeto.setCalculoDataDestino(Integer.parseInt(Info[11]));
-            Objeto.setMode(Info[12]);
-            Objeto.setDataOwner(Info[13]);
-            Objeto.setInternalFolder(Info[14]);
-
-            Sources.add(Objeto);
+            Sources.add(obterObjetoRotas(Linha));
 
             Linha = Leitor.readLine();
 
@@ -164,7 +176,7 @@ public class CadastroRotasDao {
 
         DefaultTableModel Modelo = (DefaultTableModel) this.Tabela.getModel();
 
-        List<CadastroRotasModel> ConfigsTemp = obterConfiguracoes();
+        List<CadastroRotasModel> ConfigsTemp = this.Configuracoes;
 
         ConfigsTemp.forEach(x -> {
 
@@ -191,23 +203,18 @@ public class CadastroRotasDao {
 
     }
 
-    public void ajustarTabela() {
-
-        Tabela.setAutoResizeMode(Tabela.AUTO_RESIZE_OFF);
-        Tabela.setPreferredSize(null);
-        autoResizeTable(Tabela, true, 2);
-
-    }
 
     public Set<String> obterInstancias() throws IOException {
 
-        Set<String> Instancias = obterConfiguracoes().stream()
+        Set<String> Instancias = this.Configuracoes.stream()
                 .map(x -> x.getInstancia())
                 .collect(Collectors.toSet());
 
         return Instancias;
     }
 
+    
+    
     public Set<String> obterListaFTPS() throws IOException {
 
         Set<String> Instancias = new LinkedHashSet();
@@ -219,6 +226,10 @@ public class CadastroRotasDao {
         });
 
         return Instancias;
+    }
+
+    public List<CadastroRotasModel> getConfiguracoes() {
+        return Configuracoes;
     }
 
 }

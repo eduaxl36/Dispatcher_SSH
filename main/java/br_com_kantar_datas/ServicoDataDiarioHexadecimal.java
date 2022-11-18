@@ -43,7 +43,7 @@ public class ServicoDataDiarioHexadecimal implements ServicoDataExtensoes {
                 break;
         }
 
-        String RetornaDataDoPadrao = Padrao.replaceAll("DD", Dia).replaceAll("MM", Mes).replaceAll("Y", AnoComUmDigito);
+        String RetornaDataDoPadrao = Padrao.replaceAll("œ", Dia).replaceAll("Š", Mes).replaceAll("£", AnoComUmDigito);
 
         return RetornaDataDoPadrao;
 
@@ -51,12 +51,4 @@ public class ServicoDataDiarioHexadecimal implements ServicoDataExtensoes {
     
     
     
-    
-    
-    
-    public static void main(String[] args) throws ParseException {
-
-  
-    }
-
 }

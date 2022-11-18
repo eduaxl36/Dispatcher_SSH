@@ -8,11 +8,6 @@ import br_com_kantar_WINZIP.Descompactar;
 import br_com_kantar_WINZIP.compactador;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import javax.swing.JOptionPane;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 

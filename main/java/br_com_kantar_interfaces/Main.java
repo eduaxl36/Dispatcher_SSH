@@ -100,7 +100,7 @@ public class Main extends javax.swing.JFrame {
         );
         MainDKLayout.setVerticalGroup(
             MainDKLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 593, Short.MAX_VALUE)
+            .addGap(0, 628, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Menu");

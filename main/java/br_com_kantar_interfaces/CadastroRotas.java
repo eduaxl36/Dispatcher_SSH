@@ -6,7 +6,10 @@ package br_com_kantar_interfaces;
 
 import br_com_kantar_constraints.IOConstraints;
 import br_com_kantar_services.CadastroRotasServices;
+import br_com_kantar_services.CopiadorServices;
+import br_com_util.UtilTable;
 import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,10 +20,29 @@ import javax.swing.table.DefaultTableModel;
  */
 public final class CadastroRotas extends javax.swing.JInternalFrame {
 
-    CadastroRotasServices Servico;
+    private CadastroRotasServices Servico;
+    private CopiadorServices ServicoCopiador;
+    private String Modo = "";
+    private boolean LinhaSelecionada = false;
+    private int index;
+    private DefaultTableModel Model;
 
-    public void inciaServicoEventos() {
+    public CadastroRotas() throws IOException {
+        
+        
+        initComponents();
+        inciaServicoEventos();
+        this.Servico.carregarTabela();
+        UtilTable.ajustarTabela(datos);
+        carregaCombos();
+        
+        Modo = "Modo de espera";
 
+    }
+
+    public void inciaServicoEventos() throws IOException {
+
+        ServicoCopiador = new CopiadorServices();
         Servico = new CadastroRotasServices(
                 Integer.parseInt(Id.getText()),
                 datos,
@@ -40,21 +62,13 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
                 Integer.parseInt(txtCalcDataOrigem.getText()),
                 Integer.parseInt(txtCalcDataDestino.getText())
         );
+    
 
     }
 
-    public CadastroRotas() throws IOException {
+    public final void carregaCombos() throws IOException {
 
-        initComponents();
-          inciaServicoEventos();
-         Servico.carregarTabela();
-         carregarDados();
-
-      
-
-    }
-
-    public final void carregarDados() throws IOException {
+        cbPlaza.removeAllItems();
 
         this.Servico.obterListaFTPS().forEach(x -> {
 
@@ -62,13 +76,17 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
         });
 
-    }
+        this.ServicoCopiador.obterListaRegioes().forEach(x -> {
 
-    String Modo = "En la espera de una accion";
+            cbPlaza.addItem(x);
+
+        });
+
+    }
 
     public void AtivaEdicao() {
 
-        Modo = "Listo para cambiar registro";
+        Modo = "Modo de edição";
 
         ativarCampos();
         comportamentoBotoesAtivacaoEdicao();
@@ -77,15 +95,14 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
     public void AtivaExclusao() {
 
-        Modo = "Listo para borrar registro";
-
+        Modo = "Modo de deleção";
         comportamentoBotoesAtivacaoExclusao();
 
     }
 
     public void AtivaAdicao() {
 
-        Modo = "Listo para anadir registro";
+        Modo = "Modo de adição";
         limparCampos();
         ativarCampos();
         comportamentoBotoesAtivacaoAdicao();
@@ -100,6 +117,49 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         btnConfirmar.setEnabled(true);
         btnUp.setEnabled(false);
         btnDown.setEnabled(false);
+
+    }
+
+    public void moverLinhaParaCima() {
+
+        if (LinhaSelecionada == false) {
+
+            Model = (DefaultTableModel) datos.getModel();
+            LinhaSelecionada = true;
+
+        }
+
+        index = datos.getSelectedRow();
+        if (index > 0) {
+
+            Model.moveRow(index, index, index - 1);
+            datos.setRowSelectionInterval(index - 1, index - 1);
+            datos.setSelectionBackground(Color.BLACK);
+            int UpdateId = Integer.parseInt(Id.getText()) - 1;
+            Id.setText("" + UpdateId);
+        }
+
+    }
+
+    public void moverLinhaParaBaixo() {
+
+        if (LinhaSelecionada == false) {
+
+            Model = (DefaultTableModel) datos.getModel();
+            LinhaSelecionada = true;
+
+        }
+
+        index = datos.getSelectedRow();
+        if (index < Model.getRowCount() - 1) {
+
+            Model.moveRow(index, index, index + 1);
+            datos.setRowSelectionInterval(index + 1, index + 1);
+            datos.setSelectionBackground(Color.BLACK);
+            int UpdateId = Integer.parseInt(Id.getText()) + 1;
+            Id.setText("" + UpdateId);
+
+        }
 
     }
 
@@ -198,18 +258,18 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
     }
 
-    public void comportamentoPosCofirmacao() {
+    public void comportamentoPosCofirmacao() throws FileNotFoundException {
 
         btnCancelar.setEnabled(false);
         btnConfirmar.setEnabled(false);
         btnAdd.setEnabled(true);
         btnExcluir.setEnabled(true);
         btnAlterar.setEnabled(true);
-
         desativaCampos();
         desativaSeletorConfirmaCancela();
-
         datos.setEnabled(true);
+        this.Servico.gravarTxt();
+        limparCampos();
 
     }
 
@@ -304,7 +364,7 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         Id.setText("-1");
         Pn.add(Id, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, 40, 30));
 
-        cbPlaza.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "GBA", "INTERIOR", "AR", "INDIA" }));
+        cbPlaza.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
         cbPlaza.setEnabled(false);
         Pn.add(cbPlaza, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, 160, -1));
 
@@ -328,7 +388,7 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         cbOwner.setEnabled(false);
         Pn.add(cbOwner, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 440, 160, -1));
 
-        lblPraca.setText("Praça");
+        lblPraca.setText("Base");
         Pn.add(lblPraca, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 70, 20));
 
         txtPatronOrigem.setEnabled(false);
@@ -424,7 +484,7 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
         txt_tool_tip.setBackground(new java.awt.Color(255, 102, 102));
         txt_tool_tip.setForeground(new java.awt.Color(255, 0, 0));
-        txt_tool_tip.setText("En la espera de una accion");
+        txt_tool_tip.setText("Modo de espera");
         Pn.add(txt_tool_tip, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 540, 190, 30));
 
         btnCancelar.setIcon(new javax.swing.ImageIcon("C:\\Temp\\img\\cancel.png")); // NOI18N
@@ -525,8 +585,8 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(Pn, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(Pn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -539,17 +599,8 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
     private void datosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosMousePressed
 
-        try {
+        transfereDadosTabelaParaCaixa();
 
-            transfereDadosTabelaParaCaixa();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, e);
-
-        }
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_datosMousePressed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -557,7 +608,6 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         AtivaAdicao();
         txt_tool_tip.setText(Modo);
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
@@ -565,7 +615,6 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         AtivaExclusao();
         txt_tool_tip.setText(Modo);
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
@@ -573,7 +622,6 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         AtivaEdicao();
         txt_tool_tip.setText(Modo);
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnAlterarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -581,53 +629,24 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         cargaInicialBotoes();
         desativaCampos();
         desativaSeletorConfirmaCancela();
+        txt_tool_tip.setText("Modo de espera");
 
-        Modo = "En la espera de una accion";
-
-        txt_tool_tip.setText(Modo);
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void datosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyPressed
 
-        try {
-
-            transfereDadosTabelaParaCaixa();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, e);
-
-        }
-
-        // TODO add your handling code here:
+        transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyPressed
 
     private void datosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyTyped
-        try {
 
-            transfereDadosTabelaParaCaixa();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, e);
-
-        }        // TODO add your handling code here:
+        transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyTyped
 
     private void datosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyReleased
-        try {
 
-            transfereDadosTabelaParaCaixa();
+        transfereDadosTabelaParaCaixa();
 
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, e);
-
-        }
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_datosKeyReleased
 
     public void validaInsercao() {
@@ -639,91 +658,57 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
     }
 
+
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
-        inciaServicoEventos();
+
         try {
 
+            inciaServicoEventos();
+
             switch (Modo) {
-                case "Listo para anadir registro":
+                case "Modo de adição" -> {
                     validaInsercao();
                     this.Servico.addRegistro();
-                    break;
-                case "Listo para borrar registro":
+                }
+                case "Modo de deleção" -> {
                     inciaServicoEventos();
                     this.Servico.excluirRegistro();
-
-                    break;
-                default:
+                }
+                case "Modo de edição"  -> {
                     validaInsercao();
                     this.Servico.alterarRegistro();
-
-                    break;
+                }
             }
 
-            this.Servico.gravarTxt();
-            limparCampos();
+            
             comportamentoPosCofirmacao();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
 
-            JOptionPane.showMessageDialog(null, "Hubo un error al escribir el archivo Source : " + e);
+            JOptionPane.showMessageDialog(null, "Erro ao escrever o arquivo : " + e);
+
+        } finally {
+
+            UtilTable.ajustarTabela(datos);
 
         }
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnConfirmarActionPerformed
-
-    boolean LinhaSelecionada = false;
-    int index;
-    DefaultTableModel Model;
 
     private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
 
-        if (LinhaSelecionada == false) {
+        moverLinhaParaCima();
 
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
 
-        }
-
-        index = datos.getSelectedRow();
-        if (index > 0) {
-
-            Model.moveRow(index, index, index - 1);
-            datos.setRowSelectionInterval(index - 1, index - 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) - 1;
-            Id.setText("" + UpdateId);
-        }
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnUpActionPerformed
 
     private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
 
-        if (LinhaSelecionada == false) {
-
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
-
-        }
-
-        index = datos.getSelectedRow();
-        if (index < Model.getRowCount() - 1) {
-
-            Model.moveRow(index, index, index + 1);
-            datos.setRowSelectionInterval(index + 1, index + 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) + 1;
-            Id.setText("" + UpdateId);
-
-        }
-
-        // TODO add your handling code here:
+        moverLinhaParaBaixo();
     }//GEN-LAST:event_btnDownActionPerformed
 
     private void txtInternalFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInternalFolderActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_txtInternalFolderActionPerformed
 
 

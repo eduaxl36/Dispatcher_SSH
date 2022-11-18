@@ -4,7 +4,7 @@
  */
 package br_com_kantar_interfaces;
 
-import br_com_kantar_services.ConfiguracoesServices;
+import br_com_kantar_services.FTPConnectionServices;
 import br_com_util.UtilTable;
 import java.awt.Color;
 import java.io.IOException;
@@ -22,11 +22,11 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
     /**
      * Creates new form ConfiguracionSFTP
      */
-    private ConfiguracoesServices Servico;
+    private FTPConnectionServices Servico;
 
     public void iniciaEventosDeServico() throws IOException {
 
-        Servico = new ConfiguracoesServices(
+        Servico = new FTPConnectionServices(
                 datos,
                 Integer.parseInt(Id.getText()),
                 txtFTPNome.getText(),
@@ -66,11 +66,11 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
 
     }
 
-    String Modo = "En la espera de una accion";
+    String Modo = "Aguardando ação";
 
     public void AtivaEdicao() {
 
-        Modo = "Listo para cambiar registro";
+        Modo = "Modo de edição";
 
         ativarCampos();
         comportamentoBotoesAtivacaoEdicao();
@@ -79,7 +79,7 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
 
     public void AtivaExclusao() {
 
-        Modo = "Listo para borrar registro";
+        Modo = "Modo de deleção";
 
         comportamentoBotoesAtivacaoExclusao();
 
@@ -87,7 +87,7 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
 
     public void AtivaAdicao() {
 
-        Modo = "Listo para anadir registro";
+        Modo = "Modo de adição";
         limparCampos();
         ativarCampos();
         comportamentoBotoesAtivacaoAdicao();
@@ -402,7 +402,7 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
 
         txt_tool_tip.setBackground(new java.awt.Color(255, 102, 102));
         txt_tool_tip.setForeground(new java.awt.Color(255, 0, 0));
-        txt_tool_tip.setText("En la espera de una accion");
+        txt_tool_tip.setText("Aguardando ação");
         pn.add(txt_tool_tip, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 450, 220, 30));
 
         lblPorta1.setText("Tipo");
@@ -502,46 +502,35 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
 
         try {
-
             iniciaEventosDeServico();
+            switch (Modo) {
+                case "Modo de adição":
 
-            try {
+                    adicionarDados();
+                    break;
+                case "Modo de deleção":
 
-                switch (Modo) {
-                    case "Listo para anadir registro":
+                    removerDados();
 
-                        adicionarDados();
-                        break;
-                    case "Listo para borrar registro":
+                    break;
+                default:
 
-                        removerDados();
+                    alterarDados();
 
-                        break;
-                    default:
-
-                        alterarDados();
-
-                        break;
-                }
-
-                
-                this.Servico.gravarArquivoFTPConnection(this.Modo);
-                limparCampos();
-                comportamentoPosCofirmacao();
-
-            } catch (Exception e) {
-
-                JOptionPane.showMessageDialog(null, "Hubo un error al escribir el archivo Source : " + e);
-
-            } finally {
-
-                UtilTable.ajustarTabela(datos);
-
+                    break;
             }
+
+            this.Servico.gravarArquivoFTPConnection(this.Modo);
+            limparCampos();
+            comportamentoPosCofirmacao();
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Houve um erro ao tentar gravar o arquivo : " + e);
+
+        } finally {
+
+            UtilTable.ajustarTabela(datos);
 
         }
 
@@ -554,7 +543,7 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
         desativaCampos();
         desativaSeletorConfirmaCancela();
 
-        Modo = "En la espera de una accion";
+        Modo = "Aguardando ação";
 
         txt_tool_tip.setText(Modo);
 

@@ -29,16 +29,14 @@ import org.apache.commons.lang.StringUtils;
  */
 public class UtilTable {
 
-            public static void ajustarTabela(JTable Tabela) {
+    public static void ajustarTabela(JTable Tabela) {
 
         Tabela.setAutoResizeMode(Tabela.AUTO_RESIZE_OFF);
         Tabela.setPreferredSize(null);
         autoResizeTable(Tabela, true, 2);
 
     }
-    
-    
-//    static int DEFAULT_COLUMN_PADDING =5;
+
     public static int autoResizeTable(JTable aTable, boolean includeColumnHeaderWidth, int columnPadding) {
 
         int columnCount = aTable.getColumnCount();

@@ -4,16 +4,14 @@
  */
 package br_com_kantar_services;
 
-import br_com_kantar_constraints.IOConstraints;
 import br_com_kantar_dao.CadastroRotasDao;
-import br_com_kantar_dao.FTPConnectionDao;
+import br_com_kantar_model.CadastroRotasModel;
+import br_com_util.UtilTable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,26 +21,23 @@ public class CadastroRotasServices {
 
     private CadastroRotasDao Servico;
 
-    public CadastroRotasServices() {
+    public CadastroRotasServices() throws IOException {
+
         Servico = new CadastroRotasDao();
+
     }
 
-    public CadastroRotasServices(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalcOrigem, int CalcDestino) {
+    public CadastroRotasServices(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalcOrigem, int CalcDestino) throws IOException {
 
         Servico = new CadastroRotasDao(Id, Tabela, Instancia, Praça, Processo, Tipo, Origem, PadraoOrigem, ComportamentoOrigem, Destino, PadraoDestino, ComportamentoDestino, Modo, Owner, ZipInterno, CalcOrigem, CalcDestino);
-
-    }
-
-    public Set<String> obterInstancias() throws IOException {
-
-        return this.Servico.obterInstancias();
-
+     
     }
 
     public void carregarTabela() throws IOException {
 
         this.Servico.carregarTabelaRotas();
-        this.Servico.ajustarTabela();
+    
+        
 
     }
 
@@ -64,11 +59,9 @@ public class CadastroRotasServices {
 
     }
 
-    public String addRegistro() {
+    public void addRegistro() {
 
         this.Servico.addRegistro();
-
-        return "";
 
     }
 
@@ -76,6 +69,16 @@ public class CadastroRotasServices {
 
         return this.Servico.obterListaFTPS();
 
+    }
+
+    public Set<String> obterInstancias() throws IOException {
+
+        return this.Servico.obterInstancias();
+
+    }
+
+    public List<CadastroRotasModel> getConfiguracoes() {
+        return this.Servico.getConfiguracoes();
     }
 
 }

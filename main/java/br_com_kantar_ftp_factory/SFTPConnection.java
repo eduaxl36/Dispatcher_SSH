@@ -11,7 +11,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import java.io.File;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +45,7 @@ public class SFTPConnection extends FTPService {
             System.out.println("Aguardando Sessao desconectar...");
 
         }
-            System.out.println("Sessao desconectada com sucesso!");
+        System.out.println("Sessao desconectada com sucesso!");
     }
 
     public Session obterSessao() throws JSchException, InterruptedException {
@@ -130,7 +132,11 @@ public class SFTPConnection extends FTPService {
         try {
 
             iniciarConexao();
-            Conexao().stat(DestinoRemoto);
+
+            File Pasta = new File(DestinoRemoto);
+                  
+            this.Canal.stat(Pasta.getParent().replace("\\", "/"));
+            
             finalizarConexao();
 
         } catch (SftpException e) {
@@ -147,44 +153,6 @@ public class SFTPConnection extends FTPService {
 
         return true;
 
-    }
-
-    public static void main(String[] args) throws JSchException, SftpException, IOException {
-
-//          FTPConnectionModel fs = new FTPConnectionDao().obterDadosFTP("Argentina", 4);
-//          FTPService obj = new SFTP1(fs);
-//          
-//          
-//          obj.downloadArquivo("/Produccion/IMI/Produccion/catastros/Int/20221110.txt", "c:/teste/20221110.txt");
-//        JSch jsch = new JSch();
-//        jsch.setKnownHosts("key.txt");
-//        Session session = jsch.getSession("regional", "200.123.138.140", 22);
-//        session.setPassword("K4nt4r.2021!");
-//
-//        session.connect();
-//
-//        ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
-//        channel.connect();
-//
-//        SftpATTRS attrs = channel.lstat("/Produccion/IMI/Produccion/Paralelo/OUTPUT_TELEPANEL");
-//
-//        boolean result
-//                = attrs != null
-//                && ((attrs.getPermissions() & 00200) != 0)
-//                && attrs.getUId() != 0;
-//
-//        System.out.println(result);
-////        channel.put("\\\\kimbrspp464\\ProducaoLatamParalelo\\AR\\paralelo_sistv\\SISTVARTSV-20220105.zip", "/Produccion/IMI/Produccion/Paralelo/OUTPUT_TELEPANEL/SISTVARTSV-20220105.zip");
-//
-////        Vector filelist = channel.ls("/Produccion");
-////        for (int i = 0; i < filelist.size(); i++) {
-////            LsEntry entry = (LsEntry) filelist.get(i);
-////
-//////                JOptionPane.showMessageDialog(null, entry.getFilename());
-////            System.out.println(entry.getFilename());
-////        }
-//        channel.disconnect();
-//        session.disconnect();
     }
 
 }
