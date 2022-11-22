@@ -5,7 +5,7 @@
  */
 package br_com_kantar_ftp_factory;
 
-import br_com_kantar_model.FTPConnectionModel;
+import br_com_kantar_model.ConfiguracoesSFTPModel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -27,7 +27,7 @@ public class SFTPConnection extends FTPService {
     private Session Sessao;
     private ChannelSftp Canal;
 
-    public SFTPConnection(FTPConnectionModel Model) {
+    public SFTPConnection(ConfiguracoesSFTPModel Model) {
         super(Model);
     }
 

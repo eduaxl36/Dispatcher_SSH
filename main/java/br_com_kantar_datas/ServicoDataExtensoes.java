@@ -10,6 +10,6 @@ package br_com_kantar_datas;
  */
 public interface ServicoDataExtensoes {
     
- public abstract String obterPadrao(String Data,String Padrao,String Comportamento,int CalculoData) throws Exception;   
+ public abstract String obterPadrao(String Data,String Padrao,String Comportamento,int CalculoData);   
     
 }

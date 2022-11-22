@@ -8,6 +8,8 @@ import br_com_kantar_WINZIP.Descompactar;
 import br_com_kantar_WINZIP.compactador;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 
@@ -17,7 +19,12 @@ import org.apache.commons.io.FileUtils;
  */
 public class UtilOperacoesIO {
 
-    public static void ziparArquivo(String OrigemArquivo, String ZipDestino, String InternalFolder) throws Exception {
+    public static UtilOperacoesIO getInstance() {
+
+        return new UtilOperacoesIO();
+    }
+
+    public void compactarArquivo(String OrigemArquivo, String ZipDestino, String InternalFolder) throws Exception {
 
         if (InternalFolder.equals("-")) {
 
@@ -28,7 +35,28 @@ public class UtilOperacoesIO {
 
     }
 
-    public static boolean copiarArquivo(File Origem, File DestinoDir) throws IOException {
+    public boolean copiarTodosArquivosParaPasta(File Origem, File DestinoDir) throws Exception {
+
+  
+        File[] ArquivosArray = Origem.listFiles();
+
+        List<File> Arquivos = Arrays.asList(ArquivosArray);
+
+        Arquivos.forEach(x -> {
+
+            
+            try {
+                FileUtils.copyFileToDirectory(x, DestinoDir);
+            } catch (IOException ex) {
+               
+            }
+            
+        });
+
+        return true;
+    }
+
+    public boolean copiarArquivo(File Origem, File DestinoDir) throws IOException {
 
         FileUtils.copyFile(
                 Origem,
@@ -38,7 +66,7 @@ public class UtilOperacoesIO {
         return true;
     }
 
-    public static void extrairArquivo(String ArquivoZip, String Pasta) throws ZipException {
+    public void extrairArquivo(String ArquivoZip, String Pasta) throws ZipException {
 
         Descompactar.extractToFolder(new File(ArquivoZip), Pasta);
 

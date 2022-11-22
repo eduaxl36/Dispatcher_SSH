@@ -5,7 +5,6 @@
 package br_com_kantar_dao;
 
 import br_com_kantar_model.CadastroRotasModel;
-import static br_com_util.UtilTable.autoResizeTable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,20 +30,23 @@ public class CadastroRotasDao {
     private JTable Tabela;
     private List<CadastroRotasModel> Configuracoes = null;
     private final String ROTA_ARQUIVO_SOURCES = "Cf/CaminhosParaCopia.csv";
+    private CadastroSFTPDao CadastroSFTPDao;
     
     
 
-    public CadastroRotasDao() throws IOException {
+    public CadastroRotasDao() throws IOException  {
 
         Configuracoes = obterConfiguracoes();
+        CadastroSFTPDao = new CadastroSFTPDao();
 
     }
 
-    public CadastroRotasDao(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalOrigem, int CalcDestino) throws IOException {
+    public CadastroRotasDao(int Id, JTable Tabela, String Instancia, String Praça, String Processo, int Tipo, String Origem, String PadraoOrigem, String ComportamentoOrigem, String Destino, String PadraoDestino, String ComportamentoDestino, String Modo, String Owner, String ZipInterno, int CalOrigem, int CalcDestino) throws IOException  {
 
         Modelo = new CadastroRotasModel(Id, Instancia, Praça, Processo, Tipo, Origem, PadraoOrigem, ComportamentoOrigem, CalOrigem, Destino, PadraoDestino, ComportamentoDestino, CalcDestino, Modo, Owner, ZipInterno);
         this.Tabela = Tabela;
         Configuracoes = obterConfiguracoes();
+        CadastroSFTPDao = new CadastroSFTPDao();
     }
 
     public void addRegistro() {
@@ -101,7 +103,7 @@ public class CadastroRotasDao {
 
     }
 
-    public void gravarTxt() throws FileNotFoundException {
+    public void gravarTxt() throws FileNotFoundException  {
 
         try ( PrintWriter Pw = new PrintWriter(new File(ROTA_ARQUIVO_SOURCES))) {
             for (int i = 0; i < Tabela.getRowCount(); i++) {
@@ -154,7 +156,7 @@ public class CadastroRotasDao {
         return Objeto;
     }
 
-    public List<CadastroRotasModel> obterConfiguracoes() throws FileNotFoundException, IOException {
+    public final List<CadastroRotasModel> obterConfiguracoes() throws FileNotFoundException, IOException {
 
         BufferedReader Leitor = new BufferedReader(new FileReader(new File(ROTA_ARQUIVO_SOURCES)));
         String Linha = Leitor.readLine();
@@ -172,7 +174,7 @@ public class CadastroRotasDao {
 
     }
 
-    public void carregarTabelaRotas() throws IOException {
+    public void carregarTabelaRotas()  {
 
         DefaultTableModel Modelo = (DefaultTableModel) this.Tabela.getModel();
 
@@ -215,11 +217,11 @@ public class CadastroRotasDao {
 
     
     
-    public Set<String> obterListaFTPS() throws IOException {
+    public Set<String> obterListaNomesSFTP() throws IOException {
 
         Set<String> Instancias = new LinkedHashSet();
 
-        new FTPConnectionDao().ObterConfiguracoes().forEach(x -> {
+        this.CadastroSFTPDao.getInstanciasCadastroSFTP().forEach(x -> {
 
             Instancias.add(x.getOwnerFTP());
 
@@ -232,4 +234,9 @@ public class CadastroRotasDao {
         return Configuracoes;
     }
 
+    
+    public static void main(String[] args) {
+        System.out.println("fsdfsd");
+    }
+    
 }

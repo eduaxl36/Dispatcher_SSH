@@ -2,219 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
-package br_com_kantar_interfaces;
+package br_com_kantar_interfaces_cadastros;
 
-import br_com_kantar_services.FTPConnectionServices;
-import br_com_util.UtilTable;
-import java.awt.Color;
+import br_com_kantar_controller.CadastroRotasController;
+import br_com_kantar_controller.CadastroSFTPController;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Eduardo.Fernando
  */
-public final class Configuracoes extends javax.swing.JInternalFrame {
+public final class CadastroSFTP extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form ConfiguracionSFTP
-     */
-    private FTPConnectionServices Servico;
+    private CadastroSFTPController Controladora;
 
-    public void iniciaEventosDeServico() throws IOException {
-
-        Servico = new FTPConnectionServices(
-                datos,
-                Integer.parseInt(Id.getText()),
-                txtFTPNome.getText(),
-                txtUser.getText(),
-                txtPass.getText(),
-                txtHost.getText(),
-                txtPorta.getText(),
-                cbtipo.getSelectedIndex(),
-                area.getText()
-        );
-
-    }
-
-    public Configuracoes() throws IOException {
+    public CadastroSFTP() throws IOException {
 
         initComponents();
-        iniciaEventosDeServico();
-        Servico.preecherTabelaFTP();
-
-    }
-
-    public void removerDados() throws IOException {
-
-        this.Servico.removerRegistro();
-
-    }
-
-    public void adicionarDados() throws IOException {
-
-        this.Servico.addRegistro();
-
-    }
-
-    public void alterarDados() throws IOException {
-
-        this.Servico.alterarRegistro();
-
-    }
-
-    String Modo = "Aguardando ação";
-
-    public void AtivaEdicao() {
-
-        Modo = "Modo de edição";
-
-        ativarCampos();
-        comportamentoBotoesAtivacaoEdicao();
-
-    }
-
-    public void AtivaExclusao() {
-
-        Modo = "Modo de deleção";
-
-        comportamentoBotoesAtivacaoExclusao();
-
-    }
-
-    public void AtivaAdicao() {
-
-        Modo = "Modo de adição";
-        limparCampos();
-        ativarCampos();
-        comportamentoBotoesAtivacaoAdicao();
-
-    }
-
-    public void cargaInicialBotoes() {
-
-        btnAdd.setEnabled(true);
-        btnAlterar.setEnabled(true);
-        btnExcluir.setEnabled(true);
-        btnConfirmar.setEnabled(true);
-        btnUp.setEnabled(false);
-        btnDown.setEnabled(false);
-
-    }
-
-    public void limparCampos() {
-
-        txtFTPNome.setText("");
-        txtHost.setText("");
-        txtUser.setText("");
-        txtPass.setText("");
-        txtPorta.setText("");
-        area.setText("");
-
-    }
-
-    public void ativarCampos() {
-
-        txtFTPNome.setEnabled(true);
-        txtHost.setEnabled(true);
-        txtUser.setEnabled(true);
-        txtPass.setEnabled(true);
-        txtPorta.setEnabled(true);
-        cbtipo.setEnabled(true);
-        area.setEnabled(true);
-
-    }
-
-    public void desativaCampos() {
-
-        txtFTPNome.setEnabled(false);
-        txtHost.setEnabled(false);
-        txtUser.setEnabled(false);
-        txtPass.setEnabled(false);
-        txtPorta.setEnabled(false);
-        cbtipo.setEnabled(false);
-        area.setEnabled(false);
-
-    }
-
-    public void desativaSeletorConfirmaCancela() {
-
-        btnConfirmar.setEnabled(false);
-        btnCancelar.setEnabled(false);
-        datos.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoAdicao() {
-
-        datos.setEnabled(false);
-        btnAlterar.setEnabled(false);
-        btnExcluir.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoEdicao() {
-        datos.setEnabled(true);
-        btnAdd.setEnabled(false);
-        btnExcluir.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-        btnUp.setEnabled(true);
-        btnDown.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoExclusao() {
-
-        btnAdd.setEnabled(false);
-        btnAlterar.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-
-    }
-
-    public void comportamentoPosCofirmacao() {
-
-        btnCancelar.setEnabled(false);
-        btnConfirmar.setEnabled(false);
-        btnAdd.setEnabled(true);
-        btnExcluir.setEnabled(true);
-        btnAlterar.setEnabled(true);
-
-        desativaCampos();
-        desativaSeletorConfirmaCancela();
-
-        datos.setEnabled(true);
-
-    }
-
-    public void transfereDadosTabelaParaCaixa() throws IOException {
-
-        int LinhaSelecionada = datos.getSelectedRow();
-
-        Id.setText("" + datos.getSelectedRow());
-
-        txtFTPNome.setText((String) datos.getValueAt(LinhaSelecionada, 0));
-        txtHost.setText((String) datos.getValueAt(LinhaSelecionada, 1));
-        txtUser.setText((String) datos.getValueAt(LinhaSelecionada, 2));
-        txtPass.setText((String) datos.getValueAt(LinhaSelecionada, 3));
-        txtPorta.setText("" + datos.getValueAt(LinhaSelecionada, 4));
-        cbtipo.setSelectedIndex(Integer.parseInt("" + datos.getValueAt(LinhaSelecionada, 5)));
-
-        if (Integer.parseInt("" + datos.getValueAt(LinhaSelecionada, 5)) == 2) {
-
-            area.setText(this.Servico.obterChavePublica(this.txtFTPNome.getText()));
-
-        } else {
-
-            area.setText("");
-
-        }
+        Controladora = new CadastroSFTPController(txtFTPNome, txtHost, txtPass, txtPorta, txtUser, cbtipo, area, datos, Id, btnAdd, btnAlterar, btnCancelar, btnConfirmar, btnDown, btnExcluir, btnUp, txt_tool_tip);
 
     }
 
@@ -428,178 +233,73 @@ public final class Configuracoes extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 
-        AtivaAdicao();
-        txt_tool_tip.setText(Modo);
+        Controladora.AtivaAdicao();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
 
-        AtivaExclusao();
-        txt_tool_tip.setText(Modo);
+        Controladora.AtivaExclusao();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
 
-        AtivaEdicao();
-        txt_tool_tip.setText(Modo);
+        Controladora.AtivaEdicao();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnAlterarActionPerformed
 
-    boolean LinhaSelecionada = false;
-    int index;
-    DefaultTableModel Model;
 
     private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
 
-        if (LinhaSelecionada == false) {
-
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
-
-        }
-
-        index = datos.getSelectedRow();
-        if (index > 0) {
-
-            Model.moveRow(index, index, index - 1);
-            datos.setRowSelectionInterval(index - 1, index - 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) - 1;
-            Id.setText("" + UpdateId);
-        }
+        Controladora.moverLinhaParaCima();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnUpActionPerformed
 
     private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
 
-        if (LinhaSelecionada == false) {
-
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
-
-        }
-
-        index = datos.getSelectedRow();
-        if (index < Model.getRowCount() - 1) {
-
-            Model.moveRow(index, index, index + 1);
-            datos.setRowSelectionInterval(index + 1, index + 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) + 1;
-            Id.setText("" + UpdateId);
-
-        }
-
-        // TODO add your handling code here:
+        Controladora.moverLinhaParaBaixo();
     }//GEN-LAST:event_btnDownActionPerformed
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
 
-        try {
-            iniciaEventosDeServico();
-            switch (Modo) {
-                case "Modo de adição":
-
-                    adicionarDados();
-                    break;
-                case "Modo de deleção":
-
-                    removerDados();
-
-                    break;
-                default:
-
-                    alterarDados();
-
-                    break;
-            }
-
-            this.Servico.gravarArquivoFTPConnection(this.Modo);
-            limparCampos();
-            comportamentoPosCofirmacao();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, "Houve um erro ao tentar gravar o arquivo : " + e);
-
-        } finally {
-
-            UtilTable.ajustarTabela(datos);
-
-        }
+        Controladora.acaoConfirma();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-        cargaInicialBotoes();
-        desativaCampos();
-        desativaSeletorConfirmaCancela();
-
-        Modo = "Aguardando ação";
-
-        txt_tool_tip.setText(Modo);
+        Controladora.acaoCancela();
 
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void datosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosMousePressed
 
-        try {
-            transfereDadosTabelaParaCaixa();
-
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(Configuracoes.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosMousePressed
 
     private void datosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosMouseClicked
 
-        try {
-            transfereDadosTabelaParaCaixa();
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(Configuracoes.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosMouseClicked
 
     private void datosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyPressed
-        try {
-            transfereDadosTabelaParaCaixa();
-
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(Configuracoes.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyPressed
 
     private void datosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyReleased
 
-        try {
-            transfereDadosTabelaParaCaixa();
-
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(Configuracoes.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyReleased
 
     private void datosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyTyped
-        try {
-            transfereDadosTabelaParaCaixa();
-
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(Configuracoes.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyTyped
 
 

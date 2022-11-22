@@ -92,12 +92,14 @@
         <Component class="javax.swing.JComboBox" name="cbMode">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
+              <StringArray count="7">
                 <StringItem index="0" value="copy"/>
-                <StringItem index="1" value="FTP_COPY"/>
-                <StringItem index="2" value="FTP_COPY_EXTRACT"/>
-                <StringItem index="3" value="FTP_UPLOAD"/>
-                <StringItem index="4" value="ADD_ZIP"/>
+                <StringItem index="1" value="COPY_ALL_TO_PASTA"/>
+                <StringItem index="2" value="FTP_COPY"/>
+                <StringItem index="3" value="FTP_COPY_EXTRACT"/>
+                <StringItem index="4" value="FTP_UPLOAD"/>
+                <StringItem index="5" value="ADD_ZIP"/>
+                <StringItem index="6" value="EXTRACT_ZIP"/>
               </StringArray>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
@@ -113,6 +115,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtProcesso">
           <Properties>
+            <Property name="text" type="java.lang.String" value="0"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -123,6 +126,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtOrigem">
           <Properties>
+            <Property name="text" type="java.lang.String" value="c:/temp/"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -133,6 +137,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtDestino">
           <Properties>
+            <Property name="text" type="java.lang.String" value="c:/temp/"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -143,6 +148,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtInstancia">
           <Properties>
+            <Property name="text" type="java.lang.String" value="0"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -181,6 +187,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtPatronOrigem">
           <Properties>
+            <Property name="text" type="java.lang.String" value="YYYYMMDD"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -401,6 +408,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtPatronDestino">
           <Properties>
+            <Property name="text" type="java.lang.String" value="YYYYMMDD"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
@@ -466,10 +474,11 @@
         <Component class="javax.swing.JComboBox" name="cb_acao_origem">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="4">
                 <StringItem index="0" value="Diario"/>
                 <StringItem index="1" value="HexaDecimal"/>
                 <StringItem index="2" value="Semanal"/>
+                <StringItem index="3" value="None"/>
               </StringArray>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
@@ -486,10 +495,11 @@
         <Component class="javax.swing.JComboBox" name="cb_acao_destino">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="4">
                 <StringItem index="0" value="Diario"/>
                 <StringItem index="1" value="HexaDecimal"/>
                 <StringItem index="2" value="Semanal"/>
+                <StringItem index="3" value="None"/>
               </StringArray>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>

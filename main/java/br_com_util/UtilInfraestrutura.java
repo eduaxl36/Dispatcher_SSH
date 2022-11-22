@@ -15,34 +15,34 @@ import org.apache.commons.io.FileUtils;
  */
 public class UtilInfraestrutura {
 
-    public static void CopiaImagensIcones() throws IOException {
+    private static UtilInfraestrutura Instancia;
+    private final String LOCAL_TEMP_FILE = "temp/";
 
-        File PastaDestino = new File("c:/temp/img");
-
-        if (!PastaDestino.exists()) {
-
-            PastaDestino.mkdir();
-
-        }
-
-        for (File Arquivo : new File("img/").listFiles()) {
-
-            FileUtils.copyFileToDirectory(Arquivo, PastaDestino, true);
-
-        }
-
+    private UtilInfraestrutura() {
     }
 
-    public static void abrirPasta(File Pasta) throws IOException {
+    public static UtilInfraestrutura getInstance() {
+
+        Instancia = new UtilInfraestrutura();
+        return Instancia;
+    }
+
+
+    public void abrirPasta(File Pasta) throws IOException {
 
         Desktop instancia = Desktop.getDesktop();
         instancia.open(Pasta);
 
     }
 
-    public static void limpaTemp() throws IOException {
+    public  void limpaTemp() throws IOException {
 
-        for (File x : new File("temp/").listFiles()) {
+        for (File x : new File(LOCAL_TEMP_FILE).listFiles()) {
+
+            if (x.isDirectory()) {
+                FileUtils.deleteDirectory(x);
+
+            }
 
             x.delete();
 

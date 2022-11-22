@@ -4,11 +4,11 @@
  */
 package br_com_kantar_datas;
 
-
 import br_com_util.UtilPeriodos;
-import static br_com_util.UtilPeriodos.ajustarCalculoData;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,28 +16,24 @@ import java.util.Date;
  */
 public class ServicoDataDiario implements ServicoDataExtensoes {
 
+    private UtilPeriodos FerramentaPeriodos=UtilPeriodos.getInstance();
 
-  
     @Override
-    public String obterPadrao(String Data, String Padrao,String Comportamento,int CalculoData) throws Exception {
-        
-        Data = ajustarCalculoData(Data,CalculoData);
-        
-        Date DataTransformada =UtilPeriodos.converteDataStringParaDate(Data);
+    public String obterPadrao(String Data, String Padrao, String Comportamento, int CalculoData) {
 
-        return UtilPeriodos.configuraAnoConformePadrao(Padrao, DataTransformada);
-    
-    }  
- 
+        try {
+            Data = FerramentaPeriodos.ajustarCalculoData(Data, CalculoData);
+            
+            Date DataTransformada = FerramentaPeriodos.converteDataStringParaDate(Data);
+            
+            return FerramentaPeriodos.configuraAnoConformePadrao(Padrao, DataTransformada);
+        } catch (ParseException ex) {
+            Logger.getLogger(ServicoDataDiario.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-
-    public static void main(String[] args) throws ParseException, Exception {
         
-//      System.out.println( new ServicoDataDiario().obterPadrao("20221110","APDAMMDD.R98"));
-//        
-//        
+        return "";
+        
     }
 
-    
-    
 }

@@ -2,17 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
-package br_com_kantar_interfaces;
+package br_com_kantar_interfaces_cadastros;
 
-import br_com_kantar_constraints.IOConstraints;
-import br_com_kantar_services.CadastroRotasServices;
-import br_com_kantar_services.CopiadorServices;
-import br_com_util.UtilTable;
-import java.awt.Color;
-import java.io.FileNotFoundException;
+import br_com_kantar_controller.Cadastro;
+import br_com_kantar_controller.CadastroRotasController;
 import java.io.IOException;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,282 +14,14 @@ import javax.swing.table.DefaultTableModel;
  */
 public final class CadastroRotas extends javax.swing.JInternalFrame {
 
-    private CadastroRotasServices Servico;
-    private CopiadorServices ServicoCopiador;
-    private String Modo = "";
-    private boolean LinhaSelecionada = false;
-    private int index;
-    private DefaultTableModel Model;
+    private Cadastro Controladora;
 
     public CadastroRotas() throws IOException {
-        
-        
+
         initComponents();
-        inciaServicoEventos();
-        this.Servico.carregarTabela();
-        UtilTable.ajustarTabela(datos);
-        carregaCombos();
-        
-        Modo = "Modo de espera";
+        Controladora = new CadastroRotasController(txtCalcDataDestino, txtCalcDataOrigem, txtDestino, txtInstancia, txtInternalFolder, txtOrigem, txtPatronDestino, txtPatronOrigem, txtProcesso, cbMode, cbOwner, cbPlaza, cbTipo, cb_acao_destino, cb_acao_origem, datos, Id, btnAdd, btnAlterar, btnCancelar, btnConfirmar, btnDown, btnExcluir, btnUp, txt_tool_tip);
 
     }
-
-    public void inciaServicoEventos() throws IOException {
-
-        ServicoCopiador = new CopiadorServices();
-        Servico = new CadastroRotasServices(
-                Integer.parseInt(Id.getText()),
-                datos,
-                txtInstancia.getText(),
-                cbPlaza.getSelectedItem().toString(),
-                txtProcesso.getText(),
-                cbTipo.getSelectedIndex(),
-                txtOrigem.getText(),
-                txtPatronOrigem.getText(),
-                cb_acao_origem.getSelectedItem().toString(),
-                txtDestino.getText(),
-                txtPatronDestino.getText(),
-                cb_acao_destino.getSelectedItem().toString(),
-                cbMode.getSelectedItem().toString(),
-                cbOwner.getSelectedItem().toString(),
-                txtInternalFolder.getText(),
-                Integer.parseInt(txtCalcDataOrigem.getText()),
-                Integer.parseInt(txtCalcDataDestino.getText())
-        );
-    
-
-    }
-
-    public final void carregaCombos() throws IOException {
-
-        cbPlaza.removeAllItems();
-
-        this.Servico.obterListaFTPS().forEach(x -> {
-
-            cbOwner.addItem(x);
-
-        });
-
-        this.ServicoCopiador.obterListaRegioes().forEach(x -> {
-
-            cbPlaza.addItem(x);
-
-        });
-
-    }
-
-    public void AtivaEdicao() {
-
-        Modo = "Modo de edição";
-
-        ativarCampos();
-        comportamentoBotoesAtivacaoEdicao();
-
-    }
-
-    public void AtivaExclusao() {
-
-        Modo = "Modo de deleção";
-        comportamentoBotoesAtivacaoExclusao();
-
-    }
-
-    public void AtivaAdicao() {
-
-        Modo = "Modo de adição";
-        limparCampos();
-        ativarCampos();
-        comportamentoBotoesAtivacaoAdicao();
-
-    }
-
-    public void cargaInicialBotoes() {
-
-        btnAdd.setEnabled(true);
-        btnAlterar.setEnabled(true);
-        btnExcluir.setEnabled(true);
-        btnConfirmar.setEnabled(true);
-        btnUp.setEnabled(false);
-        btnDown.setEnabled(false);
-
-    }
-
-    public void moverLinhaParaCima() {
-
-        if (LinhaSelecionada == false) {
-
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
-
-        }
-
-        index = datos.getSelectedRow();
-        if (index > 0) {
-
-            Model.moveRow(index, index, index - 1);
-            datos.setRowSelectionInterval(index - 1, index - 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) - 1;
-            Id.setText("" + UpdateId);
-        }
-
-    }
-
-    public void moverLinhaParaBaixo() {
-
-        if (LinhaSelecionada == false) {
-
-            Model = (DefaultTableModel) datos.getModel();
-            LinhaSelecionada = true;
-
-        }
-
-        index = datos.getSelectedRow();
-        if (index < Model.getRowCount() - 1) {
-
-            Model.moveRow(index, index, index + 1);
-            datos.setRowSelectionInterval(index + 1, index + 1);
-            datos.setSelectionBackground(Color.BLACK);
-            int UpdateId = Integer.parseInt(Id.getText()) + 1;
-            Id.setText("" + UpdateId);
-
-        }
-
-    }
-
-    public void limparCampos() {
-
-        txtDestino.setText("");
-        txtOrigem.setText("");
-        txtPatronOrigem.setText("");
-        txtInstancia.setText("");
-        txtProcesso.setText("");
-        Id.setText("-1");
-        txtCalcDataOrigem.setText("0");
-        txtCalcDataDestino.setText("0");
-        txtPatronOrigem.setText("");
-        txtPatronDestino.setText("");
-        txtInternalFolder.setText("-");
-
-    }
-
-    public void ativarCampos() {
-
-        txtDestino.setEnabled(true);
-        txtOrigem.setEnabled(true);
-        txtPatronOrigem.setEnabled(true);
-        txtInstancia.setEnabled(true);
-        txtProcesso.setEnabled(true);
-        txtInternalFolder.setEnabled(true);
-        txtPatronDestino.setEnabled(true);
-        cb_acao_destino.setEnabled(true);
-        cb_acao_origem.setEnabled(true);
-        txtCalcDataDestino.setEnabled(true);
-        txtCalcDataOrigem.setEnabled(true);
-        cbMode.setEnabled(true);
-        cbOwner.setEnabled(true);
-        cbPlaza.setEnabled(true);
-        cbTipo.setEnabled(true);
-
-    }
-
-    public void desativaCampos() {
-
-        txtDestino.setEnabled(false);
-        txtOrigem.setEnabled(false);
-        txtPatronOrigem.setEnabled(false);
-        txtInstancia.setEnabled(false);
-        txtProcesso.setEnabled(false);
-        txtInternalFolder.setEnabled(false);
-        txtPatronDestino.setEnabled(false);
-        txtPatronOrigem.setEnabled(false);
-        txtCalcDataDestino.setEnabled(false);
-        txtCalcDataOrigem.setEnabled(false);
-        cb_acao_destino.setEnabled(false);
-        cb_acao_origem.setEnabled(false);
-        cbMode.setEnabled(false);
-        cbOwner.setEnabled(false);
-        cbPlaza.setEnabled(false);
-        cbTipo.setEnabled(false);
-
-    }
-
-    public void desativaSeletorConfirmaCancela() {
-
-        btnConfirmar.setEnabled(false);
-        btnCancelar.setEnabled(false);
-        datos.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoAdicao() {
-
-        datos.setEnabled(false);
-        btnAlterar.setEnabled(false);
-        btnExcluir.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoEdicao() {
-        datos.setEnabled(true);
-        btnAdd.setEnabled(false);
-        btnExcluir.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-        btnUp.setEnabled(true);
-        btnDown.setEnabled(true);
-
-    }
-
-    public void comportamentoBotoesAtivacaoExclusao() {
-
-        btnAdd.setEnabled(false);
-        btnAlterar.setEnabled(false);
-        btnConfirmar.setEnabled(true);
-        btnCancelar.setEnabled(true);
-
-    }
-
-    public void comportamentoPosCofirmacao() throws FileNotFoundException {
-
-        btnCancelar.setEnabled(false);
-        btnConfirmar.setEnabled(false);
-        btnAdd.setEnabled(true);
-        btnExcluir.setEnabled(true);
-        btnAlterar.setEnabled(true);
-        desativaCampos();
-        desativaSeletorConfirmaCancela();
-        datos.setEnabled(true);
-        this.Servico.gravarTxt();
-        limparCampos();
-
-    }
-
-    public void transfereDadosTabelaParaCaixa() {
-
-        int LinhaSelecionada = datos.getSelectedRow();
-
-        Id.setText("" + datos.getSelectedRow());
-        txtInstancia.setText((String) datos.getValueAt(LinhaSelecionada, 0));
-        cbPlaza.setSelectedItem((String) datos.getValueAt(LinhaSelecionada, 1));
-        txtProcesso.setText((String) datos.getValueAt(LinhaSelecionada, 2));
-        cbTipo.setSelectedIndex(Integer.parseInt("" + datos.getValueAt(LinhaSelecionada, 3)));
-        txtOrigem.setText((String) datos.getValueAt(LinhaSelecionada, 4));
-        txtPatronOrigem.setText((String) datos.getValueAt(LinhaSelecionada, 5));
-        cb_acao_origem.setSelectedItem(datos.getValueAt(LinhaSelecionada, 6).toString());
-        txtCalcDataOrigem.setText("" + datos.getValueAt(LinhaSelecionada, 7));
-        txtDestino.setText((String) datos.getValueAt(LinhaSelecionada, 8));
-        txtPatronDestino.setText((String) datos.getValueAt(LinhaSelecionada, 9));
-        cb_acao_destino.setSelectedItem(datos.getValueAt(LinhaSelecionada, 10).toString());
-        txtCalcDataDestino.setText("" + datos.getValueAt(LinhaSelecionada, 11));
-        cbMode.setSelectedItem(datos.getValueAt(LinhaSelecionada, 12).toString());
-        cbOwner.setSelectedItem(datos.getValueAt(LinhaSelecionada, 13).toString());
-        txtInternalFolder.setText("" + datos.getValueAt(LinhaSelecionada, 14));
-
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -368,19 +94,23 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         cbPlaza.setEnabled(false);
         Pn.add(cbPlaza, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, 160, -1));
 
-        cbMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "copy", "FTP_COPY", "FTP_COPY_EXTRACT", "FTP_UPLOAD", "ADD_ZIP" }));
+        cbMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "copy", "COPY_ALL_TO_PASTA", "FTP_COPY", "FTP_COPY_EXTRACT", "FTP_UPLOAD", "ADD_ZIP", "EXTRACT_ZIP" }));
         cbMode.setEnabled(false);
         Pn.add(cbMode, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 400, 160, -1));
 
+        txtProcesso.setText("0");
         txtProcesso.setEnabled(false);
         Pn.add(txtProcesso, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 60, 260, -1));
 
+        txtOrigem.setText("c:/temp/");
         txtOrigem.setEnabled(false);
         Pn.add(txtOrigem, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, 360, -1));
 
+        txtDestino.setText("c:/temp/");
         txtDestino.setEnabled(false);
         Pn.add(txtDestino, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 250, 360, -1));
 
+        txtInstancia.setText("0");
         txtInstancia.setEnabled(false);
         Pn.add(txtInstancia, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 20, 260, -1));
 
@@ -391,6 +121,7 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         lblPraca.setText("Base");
         Pn.add(lblPraca, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 70, 20));
 
+        txtPatronOrigem.setText("YYYYMMDD");
         txtPatronOrigem.setEnabled(false);
         Pn.add(txtPatronOrigem, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 160, -1));
 
@@ -517,6 +248,7 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         });
         Pn.add(btnUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 490, 50, 40));
 
+        txtPatronDestino.setText("YYYYMMDD");
         txtPatronDestino.setEnabled(false);
         Pn.add(txtPatronDestino, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 280, 160, -1));
 
@@ -541,11 +273,11 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
         lblPadraoO.setText("Padrão");
         Pn.add(lblPadraoO, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 60, 20));
 
-        cb_acao_origem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Diario", "HexaDecimal", "Semanal" }));
+        cb_acao_origem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Diario", "HexaDecimal", "Semanal", "None" }));
         cb_acao_origem.setEnabled(false);
         Pn.add(cb_acao_origem, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 160, -1));
 
-        cb_acao_destino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Diario", "HexaDecimal", "Semanal" }));
+        cb_acao_destino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Diario", "HexaDecimal", "Semanal", "None" }));
         cb_acao_destino.setEnabled(false);
         Pn.add(cb_acao_destino, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 310, 160, -1));
 
@@ -594,117 +326,72 @@ public final class CadastroRotas extends javax.swing.JInternalFrame {
 
     private void datosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosMouseClicked
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_datosMouseClicked
 
     private void datosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosMousePressed
 
-        transfereDadosTabelaParaCaixa();
+        this.Controladora.transfereDadosTabelaParaCaixa();
 
     }//GEN-LAST:event_datosMousePressed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 
-        AtivaAdicao();
-        txt_tool_tip.setText(Modo);
+        this.Controladora.AtivaAdicao();
+
 
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
 
-        AtivaExclusao();
-        txt_tool_tip.setText(Modo);
+        this.Controladora.AtivaExclusao();
+
 
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
 
-        AtivaEdicao();
-        txt_tool_tip.setText(Modo);
+        this.Controladora.AtivaEdicao();
+
 
     }//GEN-LAST:event_btnAlterarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-        cargaInicialBotoes();
-        desativaCampos();
-        desativaSeletorConfirmaCancela();
-        txt_tool_tip.setText("Modo de espera");
+        this.Controladora.acaoCancela();
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void datosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyPressed
 
-        transfereDadosTabelaParaCaixa();
+        this.Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyPressed
 
     private void datosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyTyped
 
-        transfereDadosTabelaParaCaixa();
+        this.Controladora.transfereDadosTabelaParaCaixa();
     }//GEN-LAST:event_datosKeyTyped
 
     private void datosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datosKeyReleased
 
-        transfereDadosTabelaParaCaixa();
+        this.Controladora.transfereDadosTabelaParaCaixa();
 
     }//GEN-LAST:event_datosKeyReleased
 
-    public void validaInsercao() {
-
-        IOConstraints.validaPreenchimentoInstancia(txtInstancia.getText());
-        IOConstraints.validaPreenchimentoOrigem(txtOrigem.getText());
-        IOConstraints.validaPreenchimentoDestino(txtDestino.getText());
-        IOConstraints.validaPreenchimentoPadrao(txtPatronOrigem.getText());
-
-    }
-
-
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
 
-        try {
-
-            inciaServicoEventos();
-
-            switch (Modo) {
-                case "Modo de adição" -> {
-                    validaInsercao();
-                    this.Servico.addRegistro();
-                }
-                case "Modo de deleção" -> {
-                    inciaServicoEventos();
-                    this.Servico.excluirRegistro();
-                }
-                case "Modo de edição"  -> {
-                    validaInsercao();
-                    this.Servico.alterarRegistro();
-                }
-            }
-
-            
-            comportamentoPosCofirmacao();
-
-        } catch (IOException e) {
-
-            JOptionPane.showMessageDialog(null, "Erro ao escrever o arquivo : " + e);
-
-        } finally {
-
-            UtilTable.ajustarTabela(datos);
-
-        }
+        this.Controladora.acaoConfirma();
 
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
 
-        moverLinhaParaCima();
-
-
+        this.Controladora.moverLinhaParaCima();
+        
     }//GEN-LAST:event_btnUpActionPerformed
 
     private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
 
-        moverLinhaParaBaixo();
+        this.Controladora.moverLinhaParaBaixo();
     }//GEN-LAST:event_btnDownActionPerformed
 
     private void txtInternalFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInternalFolderActionPerformed

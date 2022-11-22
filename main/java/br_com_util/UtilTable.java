@@ -29,7 +29,21 @@ import org.apache.commons.lang.StringUtils;
  */
 public class UtilTable {
 
-    public static void ajustarTabela(JTable Tabela) {
+    private static UtilTable Instancia;
+    
+    private  UtilTable (){
+    
+    }
+    
+    public static UtilTable getInstance(){
+    
+    Instancia = new UtilTable();
+    return Instancia;
+    
+    }
+    
+    
+    public void realizaAjuste(JTable Tabela) {
 
         Tabela.setAutoResizeMode(Tabela.AUTO_RESIZE_OFF);
         Tabela.setPreferredSize(null);
@@ -37,7 +51,7 @@ public class UtilTable {
 
     }
 
-    public static int autoResizeTable(JTable aTable, boolean includeColumnHeaderWidth, int columnPadding) {
+    public int autoResizeTable(JTable aTable, boolean includeColumnHeaderWidth, int columnPadding) {
 
         int columnCount = aTable.getColumnCount();
         int tableWidth = 0;

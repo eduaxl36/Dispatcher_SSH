@@ -4,8 +4,8 @@
  */
 package br_com_kantar_ftp_factory;
 
-import br_com_kantar_dao.FTPConnectionDao;
-import br_com_kantar_model.FTPConnectionModel;
+import br_com_kantar_dao.CadastroSFTPDao;
+import br_com_kantar_model.ConfiguracoesSFTPModel;
 import java.io.IOException;
 
 /**
@@ -14,12 +14,12 @@ import java.io.IOException;
  */
 public abstract class FTPService {
 
-    FTPConnectionModel Model;
+    ConfiguracoesSFTPModel Model;
     
     public FTPService() {
     }
 
-    public FTPService(FTPConnectionModel Model) {
+    public FTPService(ConfiguracoesSFTPModel Model) {
         this.Model = Model;
     }
 
@@ -31,11 +31,11 @@ public abstract class FTPService {
     public abstract boolean validaDestinoRemoto(String Remoto) throws Exception ;
     
 
-    public FTPConnectionModel getModel() {
+    public ConfiguracoesSFTPModel getModel() {
         return Model;
     }
 
-    public void setModel(FTPConnectionModel Model) {
+    public void setModel(ConfiguracoesSFTPModel Model) {
         this.Model = Model;
     }
     

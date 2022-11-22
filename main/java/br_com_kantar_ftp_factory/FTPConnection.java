@@ -5,7 +5,7 @@
 package br_com_kantar_ftp_factory;
 
 import br_com_kantar_exception.FtpFileNotFoundException;
-import br_com_kantar_model.FTPConnectionModel;
+import br_com_kantar_model.ConfiguracoesSFTPModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +25,7 @@ public class FTPConnection extends FTPService {
 
     private FTPClient ftpClient;
 
-    public FTPConnection(FTPConnectionModel Model) {
+    public FTPConnection(ConfiguracoesSFTPModel Model) {
         super(Model);
     }
 

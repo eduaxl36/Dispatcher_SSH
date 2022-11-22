@@ -4,11 +4,11 @@
  */
 package br_com_kantar_datas;
 
-
-import static br_com_util.UtilPeriodos.ajustarCalculoData;
+import br_com_util.UtilPeriodos;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,39 +16,36 @@ import java.util.Date;
  */
 public class ServicoDataDiarioHexadecimal implements ServicoDataExtensoes {
 
+    UtilPeriodos FerramentaPeriodos;
 
-       @Override
-       public String obterPadrao(String Data,String Padrao,String Comportamento,int CalculoData) throws ParseException {
-        
-        Data = ajustarCalculoData(Data,CalculoData);
-        
-        Date DataInput = new SimpleDateFormat("yyyyMMdd").parse(Data);
+    public ServicoDataDiarioHexadecimal() {
+        this.FerramentaPeriodos = FerramentaPeriodos.getInstance();
+    }
 
-        String Ano = new SimpleDateFormat("yyyy").format(DataInput);
-        String Mes = new SimpleDateFormat("MM").format(DataInput);
-        String Dia = new SimpleDateFormat("dd").format(DataInput);
-        
-        String AnoComUmDigito = Ano.substring(Ano.length() - 1, Ano.length());
+    @Override
+    public String obterPadrao(String Data, String Padrao, String Comportamento, int CalculoData) {
 
-        switch (Mes) {
-
-            case "10":
-                Mes = new String("A");
-                break;
-            case "11":
-                Mes = new String("B");
-                break;
-            case "12":
-                Mes = new String("C");
-                break;
+        try {
+            Data = FerramentaPeriodos.ajustarCalculoData(Data, CalculoData);
+            
+            Date DataInput = FerramentaPeriodos.converteDataStringParaDate(Data);
+            
+            String[] DatasDesmembradas = FerramentaPeriodos.geradorFormatos(DataInput);
+            
+            String Mes = FerramentaPeriodos.retornaMesHexadecimal(DatasDesmembradas[2]);
+            
+            return FerramentaPeriodos.configuraPadraoHexadecimal
+                (
+                        Padrao,
+                        DatasDesmembradas[3],
+                        Mes,
+                        DatasDesmembradas[4]
+                );
+        } catch (ParseException ex) {
+            Logger.getLogger(ServicoDataDiarioHexadecimal.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String RetornaDataDoPadrao = Padrao.replaceAll("œ", Dia).replaceAll("Š", Mes).replaceAll("£", AnoComUmDigito);
+        return "";
+    }
 
-        return RetornaDataDoPadrao;
-
-    }   
-    
-    
-    
 }

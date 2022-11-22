@@ -5,15 +5,12 @@
 package br_com_kantar_services;
 
 import br_com_kantar_dao.CopiadorDao;
-import br_com_kantar_dao.FTPConnectionDao;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CopiadorServices {
 
-    
     private CopiadorDao Servico;
 
     public CopiadorServices(LocalDate Data, JTable Tabela) throws IOException {
@@ -30,46 +26,77 @@ public class CopiadorServices {
 
     }
 
-    public CopiadorServices() throws IOException {
-        
+    public CopiadorServices()  {
+
         this.Servico = new CopiadorDao();
     }
 
-    public void executor() throws Exception {
+    public void zerarTabela() {
 
-        try {
+        this.Servico.zerarTabela();
 
-            this.Servico.executor();
+    }
 
-        } catch (Exception e) {
+    public void executor()   {
 
-            e.printStackTrace();
-
-        }
+        this.Servico.executor();
 
     }
 
     public void filtrarTabelaCopiador(List<String> Regioes, String Instancia) throws IOException {
 
-        this.Servico.filtrarTabelaCopiador(Regioes, Instancia);
+        try {
+            this.Servico.filtrarTabelaCopiador(Regioes, Instancia);
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(null, "Falha ao tentar filtrar a tabela " + e.getMessage());
+
+        }
 
     }
 
     public Set<String> obterInstancias() throws IOException {
 
-        return this.Servico.obterInstancias();
+        try {
 
+            return this.Servico.obterInstancias();
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(null, "Falha ao tentar recuperar a lista de instancias " + e.getMessage());
+
+        }
+        return null;
     }
 
     public Set<String> obterProcessos() throws IOException {
 
-        return this.Servico.obterProcessos();
+        try {
+
+            return this.Servico.obterProcessos();
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(null, "Falha ao tentar recuperar a lista de processos " + e.getMessage());
+
+        }
+
+        return null;
 
     }
 
     public List<String> obterListaRegioes() throws IOException {
 
-        return this.Servico.obterListaRegioes();
+        try {
+            return this.Servico.obterListaRegioes();
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Falha ao tentar recuperar a lista de regioes " + e.getMessage());
+
+        }
+
+        return null;
 
     }
 

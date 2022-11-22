@@ -5,12 +5,10 @@
 package br_com_kantar_datas;
 
 import br_com_util.UtilPeriodos;
-import static br_com_util.UtilPeriodos.ajustarCalculoData;
-import static br_com_util.UtilPeriodos.converteDateEmJodaDateTime;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,46 +16,30 @@ import java.util.Date;
  */
 public class ServicoDataSemanal implements ServicoDataExtensoes {
 
-    public static String configuraAnoDaSemanaConformePadrao(org.joda.time.LocalDateTime DataConvertidaMiami, String Padrao) throws ParseException {
+    UtilPeriodos FerramentaPeriodos;
 
-        int SemanaDoAno = DataConvertidaMiami.weekOfWeekyear().get();
-
-        String PosicaoDoDia = "" + DataConvertidaMiami.dayOfWeek().get();
-
-        String Ano = new SimpleDateFormat("yyyy").format(new SimpleDateFormat("yyyy").parse("" + DataConvertidaMiami.getWeekyear()));
-
-        String Mes = new SimpleDateFormat("MM").format(new SimpleDateFormat("MM").parse("" + DataConvertidaMiami.getMonthOfYear()));
-
-        String MesExtenso = new SimpleDateFormat("MMMM").format(new SimpleDateFormat("MM").parse("" + DataConvertidaMiami.getMonthOfYear()));
-
-        String Ano2Digits = new SimpleDateFormat("yy").format(new SimpleDateFormat("yy").parse("" + DataConvertidaMiami.getWeekyear()));
-
-//        long OcorrenciasAno = Padrao.chars().filter(ch -> ch == 'Y').count();
-        Padrao = Padrao
-                
-                .replaceAll("‰", Ano)
-                .replaceAll("Œ", Ano2Digits)
-                .replaceAll("\\*", "" + SemanaDoAno)
-                .replaceAll("%", PosicaoDoDia)
-                .replaceAll("Š", Mes)
-                .replaceAll("#", MesExtenso);
-
-        return Padrao;
-
+    public ServicoDataSemanal() {
+        this.FerramentaPeriodos = FerramentaPeriodos.getInstance();
     }
 
+
     @Override
-    public String obterPadrao(String Data, String Padrao, String Comportamento, int CalculoData) throws ParseException {
+    public String obterPadrao(String Data, String Padrao, String Comportamento, int CalculoData) {
 
-        Data = ajustarCalculoData(Data, CalculoData);
-
-        Date DataConvertida = UtilPeriodos.converteDataStringParaDate(Data);
-
-        org.joda.time.LocalDateTime DataConvertidaMiami = converteDateEmJodaDateTime(DataConvertida);
-
-        Padrao = configuraAnoDaSemanaConformePadrao(DataConvertidaMiami, Padrao);
-
-        return Padrao;
+        try {
+            Data = FerramentaPeriodos.ajustarCalculoData(Data, CalculoData);
+            
+            Date DataConvertida = FerramentaPeriodos.converteDataStringParaDate(Data);
+            
+            org.joda.time.LocalDateTime DataConvertidaMiami = FerramentaPeriodos.converteDateEmJodaDateTime(DataConvertida);
+            
+            Padrao = FerramentaPeriodos.configuraAnoDaSemanaConformePadrao(DataConvertidaMiami, Padrao);
+            
+            return Padrao;
+        } catch (ParseException ex) {
+            Logger.getLogger(ServicoDataSemanal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
 
 }

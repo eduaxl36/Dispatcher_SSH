@@ -11,7 +11,7 @@ package br_com_kantar_datas;
 public class FactoryPadrao {
     
        
-    public ServicoDataExtensoes getPadrao(String Data,String Comportamento) throws Exception{
+    public ServicoDataExtensoes getPadrao(String Data,String Comportamento){
     
     ServicoDataExtensoes Engine=null;
         
@@ -29,6 +29,11 @@ public class FactoryPadrao {
                      Engine = new ServicoDataDiarioHexadecimal();
                      return Engine;
                 }
+              case "None" ->                 {
+                     Engine = new ServicoDataNone();
+                     return Engine;
+                }          
+            
             default -> {
             }
         }

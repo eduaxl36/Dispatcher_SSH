@@ -8,7 +8,7 @@ package br_com_kantar_model;
  *
  * @author Eduardo.Fernando
  */
-public class FTPConnectionModel {
+public class ConfiguracoesSFTPModel {
     
   private String OwnerFTP;
   private int TipoFtp;
@@ -18,10 +18,10 @@ public class FTPConnectionModel {
   private int Porta;
 
 
-    public FTPConnectionModel() {
+    public ConfiguracoesSFTPModel() {
     }
 
-    public FTPConnectionModel(String OwnerFTP, int TipoFtp, String User, String Senha, String Host, int Porta) {
+    public ConfiguracoesSFTPModel(String OwnerFTP, int TipoFtp, String User, String Senha, String Host, int Porta) {
         this.OwnerFTP = OwnerFTP;
         this.TipoFtp = TipoFtp;
         this.User = User;

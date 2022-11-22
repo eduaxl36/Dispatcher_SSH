@@ -4,7 +4,7 @@
  */
 package br_com_kantar_dao;
 
-import br_com_kantar_model.FTPConnectionModel;
+import br_com_kantar_model.ConfiguracoesSFTPModel;
 import br_com_util.UtilTable;
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,13 +25,14 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Eduardo.Fernando
  */
-public class FTPConnectionDao {
+public final class CadastroSFTPDao {
 
     private final String ROOT = "Cf/FTP/";
     private final String CAMINHO_ARQUIVO_CF_FTP_CONNECTION = "Cf/FTP/FTPConnection.csv";
-    private FTPConnectionModel ObjCf;
+    private final String NOME_LITERAL_ARQUIVO_CHAVE = "Key.txt";
+    private ConfiguracoesSFTPModel ObjCf;
     private JTable Tabela;
-    private List<FTPConnectionModel> Configuracoes = null;
+    private List<ConfiguracoesSFTPModel> instanciasCadastroSFTP = null;
     private int Id;
     private String Owner;
     private String User;
@@ -41,14 +42,16 @@ public class FTPConnectionDao {
     private String Key;
     private String Host;
 
-    public FTPConnectionDao() throws IOException {
-        Configuracoes = ObterConfiguracoes();
+    public CadastroSFTPDao() throws IOException {
+        
+        instanciasCadastroSFTP = obterInstanciasCadastrosSFTP();
+
     }
 
-    public FTPConnectionDao(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo, String Key) throws IOException {
+    public CadastroSFTPDao(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo, String Key) throws IOException  {
 
-        Configuracoes = ObterConfiguracoes();
-
+        instanciasCadastroSFTP = obterInstanciasCadastrosSFTP();
+        
         this.Tabela = Tabela;
         this.Id = Id;
         this.Owner = Owner;
@@ -61,9 +64,9 @@ public class FTPConnectionDao {
 
     }
 
-    public FTPConnectionDao(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo) throws IOException {
+    public CadastroSFTPDao(JTable Tabela, int Id, String Owner, String User, String Pass, String Host, String Porta, int Tipo) throws IOException {
 
-        Configuracoes = ObterConfiguracoes();
+        instanciasCadastroSFTP = obterInstanciasCadastrosSFTP();
 
         this.Tabela = Tabela;
         this.Id = Id;
@@ -76,13 +79,16 @@ public class FTPConnectionDao {
 
     }
 
-    public List<FTPConnectionModel> getConfiguracoes() {
-        return Configuracoes;
+    public List<ConfiguracoesSFTPModel> getInstanciasCadastroSFTP() {
+        
+        return instanciasCadastroSFTP;
+        
     }
 
-    public FTPConnectionModel retornaObjetoCf(String[] Linha) {
+    
+    public ConfiguracoesSFTPModel retornaInstanciaCadastroSFTP(String[] Linha) {
 
-        ObjCf = new FTPConnectionModel(
+        ObjCf = new ConfiguracoesSFTPModel(
                 Linha[0],
                 Integer.parseInt(
                         Linha[1]),
@@ -95,9 +101,9 @@ public class FTPConnectionDao {
 
     }
 
-    public List<FTPConnectionModel> ObterConfiguracoes() throws FileNotFoundException, IOException {
+    public List<ConfiguracoesSFTPModel> obterInstanciasCadastrosSFTP() throws FileNotFoundException, IOException  {
 
-        List<FTPConnectionModel> Configuracoes = new ArrayList();
+        List<ConfiguracoesSFTPModel> Configuracoes = new ArrayList();
 
         BufferedReader Leitor = new BufferedReader(new FileReader(new File(CAMINHO_ARQUIVO_CF_FTP_CONNECTION)));
 
@@ -107,7 +113,7 @@ public class FTPConnectionDao {
 
             String[] DadosFracionados = Linha.split(";");
 
-            Configuracoes.add(retornaObjetoCf(DadosFracionados));
+            Configuracoes.add(retornaInstanciaCadastroSFTP(DadosFracionados));
 
             Linha = Leitor.readLine();
 
@@ -117,9 +123,9 @@ public class FTPConnectionDao {
 
     }
 
-    public FTPConnectionModel obterDadosFTP(String Owner, int Tipo) throws IOException {
+    public ConfiguracoesSFTPModel retornaInstanciaCadastroSFTP(String Owner, int Tipo) throws IOException {
 
-        List<FTPConnectionModel> Configuracoes = ObterConfiguracoes()
+        List<ConfiguracoesSFTPModel> Configuracoes = this.instanciasCadastroSFTP
                 .stream()
                 .filter(x -> x.getOwnerFTP().equals(Owner))
                 .filter(x -> x.getTipoFtp() == Tipo)
@@ -129,11 +135,11 @@ public class FTPConnectionDao {
 
     }
 
-    public Set<String> obterListaNomesFTP() throws IOException {
+    public Set<String> obterListaNomes() throws IOException {
 
         Set<String> Instancias = new LinkedHashSet();
 
-        ObterConfiguracoes().forEach(x -> {
+        this.instanciasCadastroSFTP.forEach(x -> {
 
             Instancias.add(x.getOwnerFTP());
 
@@ -142,11 +148,11 @@ public class FTPConnectionDao {
         return Instancias;
     }
 
-    public void preecherTabelaFTP() {
+    public void preecherTabela() {
 
         DefaultTableModel Modelo = (DefaultTableModel) this.Tabela.getModel();
 
-        this.Configuracoes.forEach(x -> {
+        this.instanciasCadastroSFTP.forEach(x -> {
 
             Modelo.addRow(new Object[]{
                 x.getOwnerFTP(),
@@ -160,7 +166,6 @@ public class FTPConnectionDao {
 
         });
 
-        UtilTable.ajustarTabela(this.Tabela);
     }
 
     public String obterChavePublica(String Owner) throws IOException {
@@ -172,7 +177,6 @@ public class FTPConnectionDao {
     public void removerRegistro() throws IOException {
 
         DefaultTableModel model = (DefaultTableModel) Tabela.getModel();
-
         model.removeRow(this.Id);
 
     }
@@ -217,7 +221,7 @@ public class FTPConnectionDao {
         } else {
             if (this.Tipo == 2) {
 
-                criaPastaChavePublica();
+                criaEstruturaChavePublica();
                 gravarChavePublica();
 
             }
@@ -246,40 +250,40 @@ public class FTPConnectionDao {
 
     }
 
-    public void criaPastaChavePublica() throws IOException {
+    public void criaChave(File Chave) throws IOException {
 
-        File SourceChave = new File(ROOT + this.Owner);
+        Chave = new File(this.ROOT + this.Owner + this.NOME_LITERAL_ARQUIVO_CHAVE);
+
+        if (!Chave.exists()) {
+
+            Chave.createNewFile();
+
+        }
+
+    }
+
+    public void criaEstruturaChavePublica() throws IOException {
+
+        File SourceChave = new File(this.ROOT + this.Owner);
 
         if (!SourceChave.exists()) {
 
             SourceChave.mkdir();
 
         }
-
-        SourceChave = new File(ROOT + this.Owner + "/Key.txt");
-
-        if (!SourceChave.exists()) {
-
-            SourceChave.createNewFile();
-
-        }
+        criaChave(SourceChave);
 
     }
 
     public void gravarChavePublica() throws IOException {
 
-        File SourceChave = new File(ROOT + this.Owner + "/Key.txt");
+        File SourceChave = new File(this.ROOT + this.Owner + "/"+this.NOME_LITERAL_ARQUIVO_CHAVE);
         try ( PrintWriter Pw = new PrintWriter(new File(SourceChave.getAbsolutePath()))) {
 
             Pw.println(this.Key);
 
         }
 
-    }
-
-    public static void main(String[] args) throws IOException {
-
-//        System.out.println(new FTPConnectionDao().obterDadosFTP("Realtime", 3));
     }
 
 }

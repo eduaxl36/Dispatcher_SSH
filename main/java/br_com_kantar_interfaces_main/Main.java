@@ -2,10 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package br_com_kantar_interfaces;
+package br_com_kantar_interfaces_main;
 
-import static br_com_util.UtilInfraestrutura.CopiaImagensIcones;
-import static br_com_util.UtilInfraestrutura.limpaTemp;
+import br_com_kantar_interfaces_cadastros.CadastroRotas;
+import br_com_kantar_interfaces_cadastros.CadastroSFTP;
+import br_com_kantar_interfaces_copiador.Copiador;
+import br_com_util.UtilInfraestrutura;
+//import static br_com_util.UtilInfraestrutura.CopiaImagensIcones;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -18,13 +22,16 @@ import javax.swing.UIManager;
  * @author Eduardo.Fernando
  */
 public class Main extends javax.swing.JFrame {
-
+private UtilInfraestrutura UtilInfra;
     /**
      * Creates new form NewJFrame
+     * @throws java.io.IOException
      */
     public Main() throws IOException {
-        CopiaImagensIcones();
+//        CopiaImagensIcones();
         initComponents();
+        UtilInfra = UtilInfraestrutura.getInstance();
+        
         //    theme();
     }
 
@@ -159,7 +166,7 @@ public class Main extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
         try {
-            limpaTemp();
+            UtilInfra.limpaTemp();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao tentar limpar a pasta Temp ", "Error al limpiar la carpeta", JOptionPane.ERROR_MESSAGE);
         }
@@ -195,9 +202,9 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        Configuracoes Podf = null;
+        CadastroSFTP Podf = null;
         try {
-            Podf = new Configuracoes();
+            Podf = new CadastroSFTP();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

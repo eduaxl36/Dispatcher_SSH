@@ -4,8 +4,8 @@
  */
 package br_com_kantar_ftp_factory;
 
-import br_com_kantar_dao.FTPConnectionDao;
-import br_com_kantar_model.FTPConnectionModel;
+
+import br_com_kantar_model.ConfiguracoesSFTPModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ import java.net.URL;
  */
 public class URLConnection extends FTPService {
 
-    public URLConnection(FTPConnectionModel Model) {
+    public URLConnection(ConfiguracoesSFTPModel Model) {
         super(Model);
     }
 
@@ -114,16 +114,6 @@ public class URLConnection extends FTPService {
         return true;
     }
 
-    public static void main(String[] args) throws IOException, Exception {
 
-        FTPConnectionModel fs = new FTPConnectionDao().obterDadosFTP("RawData", 2);
-
-        FTPService obj = new URLConnection(fs);
-
-        obj.validaDestinoRemoto("/01-CLIENTS/Database/08-P&G/ARG/Ar-Audience/");
-
-//        obj.downloadArquivo("/LOGS11-13-20ff22", "c:/teste/LOGS11-13-2022");
-//        obj.validaDestinoRemoto("/teste/");
-    }
 
 }
